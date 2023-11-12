@@ -190,6 +190,24 @@ resource "aws_security_group" "be-sg" {
   }
 }
 
+resource "aws_security_group_rule" "inbound_ssh_gr" {
+  type                     = "ingress"
+  from_port                = 22
+  to_port                  = 22
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.be-sg.id
+  security_group_id        = aws_security_group.gr-sg.id
+}
+
+resource "aws_security_group_rule" "inbound_ssh_be" {
+  type                     = "ingress"
+  from_port                = 22
+  to_port                  = 22
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.gr-sg.id
+  security_group_id        = aws_security_group.be-sg.id
+}
+
 resource "aws_instance" "gs-instance" {
   ami = var.DEFAULT_AMI
   instance_type = var.PROVIDER_INSTANCE_TYPE
@@ -204,26 +222,30 @@ resource "aws_instance" "gs-instance" {
   }
 }
 
-# resource "aws_instance" "gr-instance" {
-#   ami = var.DEFAULT_AMI
-#   instance_type = var.PROVIDER_INSTANCE_TYPE
-#   key_name = var.KEY_PAIR
+resource "aws_instance" "gr-instance" {
+  ami = var.DEFAULT_AMI
+  instance_type = var.PROVIDER_INSTANCE_TYPE
+  key_name = var.KEY_PAIR
 
-#   security_groups = [aws_security_group.gr-sg.name]
+  subnet_id = aws_subnet.public-subnet-01.id  
+  vpc_security_group_ids = [aws_security_group.gr-sg.id]
+  associate_public_ip_address = true
 
-#   tags = {
-#     Name = "gr-instance"
-#   }
-# }
+  tags = {
+    Name = "gr-instance"
+  }
+}
 
-# resource "aws_instance" "be-instance" {
-#   ami = var.DEFAULT_AMI
-#   instance_type = var.PROVIDER_INSTANCE_TYPE
-#   key_name = var.KEY_PAIR
+resource "aws_instance" "be-instance" {
+  ami = var.DEFAULT_AMI
+  instance_type = var.PROVIDER_INSTANCE_TYPE
+  key_name = var.KEY_PAIR
 
-#   security_groups = [aws_security_group.be-sg.name]
+  subnet_id = aws_subnet.public-subnet-02.id  
+  vpc_security_group_ids = [aws_security_group.be-sg.id]
+  associate_public_ip_address = true
 
-#   tags = {
-#     Name = "be-instance"
-#   }
-# }
+  tags = {
+    Name = "be-instance"
+  }
+}
