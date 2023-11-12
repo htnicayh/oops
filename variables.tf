@@ -15,7 +15,7 @@ variable "AZ_PUBLIC_01" {
 }
 
 variable "AZ_PUBLIC_02" {
-  description = "Private Subnet Region"
+  description = "Public Subnet Region"
   type = string
 }
 
