@@ -260,7 +260,7 @@ resource "aws_instance" "gr-instance" {
     gitlab-runner -version
     usermod -aG docker gitlab-runner
     usermod -aG sudo gitlab-runner
-    mkdir -p /home/docker-app/registry && chmod -R 777 /home/docker-app/registry && cd /home/docker-app/registry 
+    mkdir -p /home/docker/registry && chmod -R 777 /home/docker/registry && cd /home/docker/registry 
     mkdir certs data
     apt get update
     apt-get install openssl -y
